@@ -1,8 +1,8 @@
-# World Explorer Tracker
+# World Explorer Tracker 
 
 World Explorer Tracker is a personal travel-journal dashboard for recording the places that have shaped your journey. It turns a large geographic directory into a simple, visual progress experience: select continents, countries, and states, then review your exploration as a travel card.
 
-## Project Idea
+## Project Idea     [(Live Demo)](https://atlastrail.vercel.app/)
 
 Travel memories are often spread across notes, photo albums, and scattered lists. This project provides one lightweight place to build a living record of those experiences.
 

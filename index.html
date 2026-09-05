@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="Track your journey across the world.">
+	<title>World Explorer Tracker</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="styles.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jsvectormap@1.6.0/dist/jsvectormap.min.css">
+	<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/jsvectormap@1.6.0/dist/jsvectormap.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/jsvectormap@1.6.0/dist/maps/world.js"></script>
+	<script src="world-data.js" defer></script>
+	<script src="app.js" defer></script>
+</head>
+<body>
+	<div id="start-page" class="start-page">
+		<div class="start-page__grid"></div>
+		<div class="start-page__content">
+			<p class="eyebrow">Field journal / 001</p>
+			<h1>World Explorer Tracker</h1>
+			<p class="start-page__tagline">Chart the places that have shaped your journey.</p>
+			<p id="loading-status" class="loading-status">Calibrating map data...</p>
+			<button type="button" id="beginExpedition" class="primary-button" disabled>Calibrating Map...</button>
+		</div>
+	</div>
+
+	<main id="app-shell" class="app-shell hidden">
+		<header class="topbar">
+			<div>
+				<p class="eyebrow">Personal expedition log</p>
+				<h1>World Explorer Tracker</h1>
+				<p class="subtitle">Map the places that have shaped your journey, one destination at a time.</p>
+			</div>
+			<div class="status-chip">Tracker ready</div>
+		</header>
+
+		<section class="dashboard" aria-label="World exploration dashboard">
+			<section class="panel explorer-panel" aria-labelledby="directory-title">
+				<div class="panel-heading">
+					<h2 id="directory-title">Explore the world</h2>
+					<p class="panel-meta">Select a region to begin</p>
+				</div>
+
+				<div class="search-field">
+					<label for="destinationSearch">Search destinations</label>
+					<input type="text" id="destinationSearch" placeholder="Search states or countries..." autocomplete="off">
+					<button type="button" id="clearSearch" class="clear-search" aria-label="Clear search" title="Clear search" hidden>×</button>
+				</div>
+
+				<div class="tree-controls" aria-label="Tree view controls">
+					<button type="button" id="expandAll">Expand All</button>
+					<button type="button" id="collapseAll">Collapse All</button>
+					<button type="button" id="clearSelection">Clear Selection</button>
+				</div>
+
+				<div class="directory" id="directory" aria-live="polite"></div>
+			</section>
+		</section>
+		<button type="button" id="viewStats" class="stats-fab">View Travel Card</button>
+	</main>
+
+	<div id="stats-modal" class="modal" hidden>
+		<div class="modal__backdrop" data-close-stats></div>
+		<section class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="stats-title">
+			<div class="modal__header">
+				<div>
+					<p class="eyebrow">Expedition summary</p>
+					<h2 id="stats-title">Your Travel Card</h2>
+				</div>
+				<button type="button" class="modal__close" data-close-stats aria-label="Close travel card">×</button>
+			</div>
+			<div class="stats-layout">
+				<div class="stats-summary">
+					<div class="chart-wrap">
+						<canvas id="progress-chart" aria-label="World exploration percentage chart"></canvas>
+						<div class="chart-center" aria-hidden="true">
+							<p class="chart-value">0%</p>
+							<p class="chart-label">explored</p>
+						</div>
+					</div>
+					<dl class="metric-list">
+						<div class="metric"><dt>Locations visited</dt><dd id="visited-count">0</dd></div>
+						<div class="metric"><dt>Locations mapped</dt><dd id="total-count">0</dd></div>
+					</dl>
+				</div>
+				<div class="map-panel">
+					<p class="map-panel__label">Visited countries</p>
+					<div id="world-map" aria-label="World map showing visited countries"></div>
+				</div>
+			</div>
+			<div class="share-tools" aria-label="Share travel card">
+				<p class="share-tools__label">Share your journey</p>
+				<div class="share-tools__actions">
+					<button type="button" id="shareLinkedIn" class="share-button share-button--linkedin" data-share-platform="LinkedIn" aria-label="Share travel card on LinkedIn">LinkedIn</button>
+					<button type="button" id="shareTwitter" class="share-button share-button--twitter" data-share-platform="X / Twitter" aria-label="Share travel card on X">X / Twitter</button>
+					<button type="button" id="shareWhatsApp" class="share-button share-button--whatsapp" data-share-platform="WhatsApp" aria-label="Share travel card on WhatsApp">WhatsApp</button>
+					<button type="button" id="shareInstagram" class="share-button share-button--instagram" data-share-platform="Instagram" aria-label="Share travel card to Instagram">Instagram</button>
+				</div>
+				<p id="shareStatus" class="share-tools__status" role="status" aria-live="polite"></p>
+			</div>
+		</section>
+	</div>
+</body>
+</html>

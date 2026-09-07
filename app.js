@@ -287,10 +287,12 @@
 		var linkedIn = document.getElementById("shareLinkedIn");
 		var twitter = document.getElementById("shareTwitter");
 		var whatsApp = document.getElementById("shareWhatsApp");
+		var instagram = document.getElementById("shareInstagram");
 
 		if (linkedIn) linkedIn.dataset.shareUrl = "https://www.linkedin.com/sharing/share-offsite/?url=" + encodedUrl;
 		if (twitter) twitter.dataset.shareUrl = "https://twitter.com/intent/tweet?text=" + encodedText + "&url=" + encodedUrl;
 		if (whatsApp) whatsApp.dataset.shareUrl = "https://wa.me/?text=" + encodeURIComponent(details.text + " " + details.url);
+		if (instagram) instagram.dataset.shareUrl = "https://www.instagram.com/";
 	}
 
 	function createTravelCardImage(callback) {
@@ -357,6 +359,7 @@
 	function shareTravelCardImage(platform, fallbackUrl) {
 		var status = document.getElementById("shareStatus");
 		var shareButtons = Array.from(document.querySelectorAll(".share-button"));
+		var shareWindow = fallbackUrl ? window.open(fallbackUrl, "_blank") : null;
 		shareButtons.forEach(function (button) { button.disabled = true; });
 		var finish = function () {
 			shareButtons.forEach(function (button) { button.disabled = false; });
@@ -370,22 +373,20 @@
 					return;
 				}
 
-				var file = new File([blob], "world-explorer-travel-card.png", { type: "image/png" });
-				if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-					navigator.share({ title: "My World Explorer Travel Card", text: getShareDetails().text, files: [file] })
-						.then(function () { status.textContent = "Travel card image shared via " + platform + "."; })
-						.catch(function () { status.textContent = "Sharing cancelled."; })
-						.finally(finish);
-					return;
-				}
-
 				var downloadUrl = URL.createObjectURL(blob);
 				var downloadLink = document.createElement("a");
 				downloadLink.href = downloadUrl;
 				downloadLink.download = "world-explorer-travel-card.png";
+				downloadLink.style.display = "none";
+				document.body.appendChild(downloadLink);
 				downloadLink.click();
-				URL.revokeObjectURL(downloadUrl);
-				if (fallbackUrl) window.open(fallbackUrl, "_blank", "noopener");
+				downloadLink.remove();
+				setTimeout(function () { URL.revokeObjectURL(downloadUrl); }, 1000);
+				if (fallbackUrl && !shareWindow) {
+					status.textContent = "Your browser blocked the share window. Image downloaded; open " + platform + " to finish sharing.";
+					finish();
+					return;
+				}
 				status.textContent = "Image downloaded. Attach it in " + platform + " to finish sharing.";
 				finish();
 			}, "image/png");
@@ -661,12 +662,8 @@
 	function initializeStatsModal() {
 		var viewStatsButton = document.getElementById("viewStats");
 		var beginButton = document.getElementById("beginExpedition");
-		var instagramButton = document.getElementById("shareInstagram");
 
 		if (viewStatsButton) viewStatsButton.addEventListener("click", openStats);
-		if (instagramButton) instagramButton.addEventListener("click", function () {
-			shareTravelCardImage(this.dataset.sharePlatform, "https://www.instagram.com/");
-		});
 		document.querySelectorAll(".share-button").forEach(function (shareButton) {
 			shareButton.addEventListener("click", function () {
 				shareTravelCardImage(this.dataset.sharePlatform, this.dataset.shareUrl);
